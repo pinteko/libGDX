@@ -22,7 +22,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		batch = new SpriteBatch();
 		animation = new Anim("man.png", 6, 4, Animation.PlayMode.LOOP);
 		x = Gdx.input.getX();
-		y = Gdx.graphics.getHeight() - Gdx.input.getY();
+		y = 0;
 		direction = true;
 	}
 
@@ -40,9 +40,48 @@ public class MyGdxGame extends ApplicationAdapter {
 		if (!animation.getFrame().isFlipX() && direction) animation.getFrame().flip(true, false);
 		if (animation.getFrame().isFlipX() && !direction) animation.getFrame().flip(true, false);
 
+		if (animation.getFrame() == animation.jump()[7]) {y += animation.getFrame().getRegionHeight()/2f;}
+		if (animation.getFrame() == animation.jump()[8]) {y += animation.getFrame().getRegionHeight()/2f;}
+		if (animation.getFrame() == animation.jump()[9]) {y -= animation.getFrame().getRegionHeight()/2f;}
+		if (animation.getFrame() == animation.jump()[10]) {y -= animation.getFrame().getRegionHeight()/2f;}
+		/* тут спрайт на картинке прыгает, и я его на двух кадрах подкидываю вверх, на двух опускаю вниз
+		в соответствии с картинкой */
+
 		batch.begin();
-		batch.draw(animation.getFrame(), 0, 0);
+		batch.draw(animation.getFrame(), xDirection(), y);
 		batch.end();
+	}
+
+	/* В этом методе я проверяю, уперся ли спрайт в конец дисплея в своем направлении,
+	* и если да, то разворачиваю его и направляю в другую сторону, без использования клавиш.
+	* Так же можно в любой точке заставить его развернуться  в нужную сторону с помощью клавиш
+	* (это действие описано в методе render()).*/
+	public float xDirection() {
+//		float x = Gdx.input.getX() - animation.getFrame().getRegionWidth()/2;
+		if (animation.getFrame().isFlipX()) {
+			if (x >= Gdx.graphics.getWidth() - animation.getFrame().getRegionWidth()) {
+				animation.getFrame().flip(true, false);
+				direction = false;
+				return x -= animation.getFrame().getRegionWidth()/100f;
+			}
+			return x += animation.getFrame().getRegionWidth()/100f;
+		}
+		else {
+			if (x <= 0) {
+				animation.getFrame().flip(true, false);
+				direction = true;
+				return x += animation.getFrame().getRegionWidth()/100f;
+			}
+			return x -= animation.getFrame().getRegionWidth()/100f;
+		}
+	}
+
+	public float yDirection() {
+//		float y = Gdx.graphics.getHeight() - Gdx.input.getY() - animation.getFrame().getRegionHeight()/2;
+		if (y < Gdx.graphics.getHeight()) {
+			y += animation.getFrame().getRegionHeight()/2;
+		}
+		return y;
 	}
 	
 	@Override

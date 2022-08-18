@@ -9,6 +9,8 @@ public class Anim {
    private Texture img;
    private Animation<TextureRegion> anm;
     private TextureRegion[][] regions0;
+
+    private TextureRegion[] region1;
    private float time;
 
      public Anim(String picture, int col, int row, Animation.PlayMode playMode) {
@@ -19,7 +21,7 @@ public class Anim {
          int yCnt = region0.getRegionHeight() / row;
          regions0 = region0.split(xCnt, yCnt);
 
-         TextureRegion[] region1 = new TextureRegion[regions0.length * regions0[0].length];
+         region1 = new TextureRegion[regions0.length * regions0[0].length];
          int cnt = 0;
          for (int i = 0; i < regions0.length; i++) {
              for (int j = 0; j < regions0[0].length; j++) {
@@ -45,6 +47,10 @@ public class Anim {
 
     public void setMode(Animation.PlayMode playMode) {
          anm.setPlayMode(playMode);
+    }
+
+    public TextureRegion[] jump() {
+         return region1;
     }
 
     public void dispose() {}
