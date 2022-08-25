@@ -19,6 +19,7 @@ public class MenuScreen implements Screen {
     private SpriteBatch batch;
 
     private Texture img;
+    private Texture button_start;
     private Rectangle startRect;
 
     private ShapeRenderer shapeRenderer;
@@ -27,7 +28,10 @@ public class MenuScreen implements Screen {
         game = main;
         batch = new SpriteBatch();
         img = new Texture("city.jpg");
-        startRect = new Rectangle(0, 0, img.getWidth(), img.getHeight());
+        button_start = new Texture("button_start.png");
+        startRect = new Rectangle(Gdx.graphics.getWidth()/2f - button_start.getWidth()/2f,
+                Gdx.graphics.getHeight()/2f - button_start.getHeight()/2f,
+                button_start.getWidth(), button_start.getHeight());
         shapeRenderer = new ShapeRenderer();
     }
 
@@ -43,6 +47,8 @@ public class MenuScreen implements Screen {
 
         batch.begin();
         batch.draw(img, 0, 0);
+        batch.draw(button_start, Gdx.graphics.getWidth()/2f - button_start.getWidth()/2f,
+                Gdx.graphics.getHeight()/2f - button_start.getHeight()/2f);
         batch.end();
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);

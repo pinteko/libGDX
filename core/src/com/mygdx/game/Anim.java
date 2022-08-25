@@ -3,6 +3,7 @@ package com.mygdx.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class Anim {
@@ -10,6 +11,7 @@ public class Anim {
    private Animation<TextureRegion> anm;
     private TextureRegion[][] regions0;
 
+    private TextureAtlas atlas;
     private TextureRegion[] region1;
    private float time;
 
@@ -29,6 +31,9 @@ public class Anim {
              }
          }
          anm = new Animation<TextureRegion>(1/15f, region1);
+//         atlas = new TextureAtlas("atlas/unnamed.atlas");
+//         anm = new Animation<TextureRegion>(1/15f, atlas.findRegions("Ladder"));
+//         anm = new Animation<TextureRegion>(1/15f, atlas.findRegions("Jump"));
          setMode(playMode);
 
          time += Gdx.graphics.getDeltaTime();
