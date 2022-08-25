@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.9" tiledversion="1.9.1" orientation="orthogonal" renderorder="right-down" width="18" height="18" tilewidth="16" tileheight="16" infinite="0" nextlayerid="3" nextobjectid="3">
+ <tileset firstgid="1" name="tile3" tilewidth="16" tileheight="16" spacing="1" tilecount="64" columns="8">
+  <image source="tile3.png" width="135" height="136"/>
+ </tileset>
+ <tileset firstgid="65" name="tile1" tilewidth="16" tileheight="16" tilecount="768" columns="32">
+  <image source="tile1.png" width="512" height="384"/>
+ </tileset>
+ <layer id="1" name="Map" width="18" height="18" offsetx="-1.09091" offsety="-0.181818">
+  <data encoding="base64" compression="zlib">
+   eJyllLdOA0EQhveOCqgIBhpCT0WUG0IL5gFoCC0SLaHB0Br8CsZuHV6B0BIaYxAVoSU0BImK8K1uRx6vbAooPs3qdmf2v5n7rxwacwGVf8RLeIFXeHPxHRYCYxZhScVlaGavBVph1xizB2kT5bQ1GdMOHS52wgE5h3Ck4jGswCokyCuQX4SSiXJ8PfZZjNgF3Sr2QIoaaTgh9xTO4FzpGYYRxyis8XwdNlTcDCM9ts4DuY/wBM9Kz4LXhxmrHWa9KHr88++uz1usk7ANO64PBSjWiaWgej7pzoueDOt9yELO3Wv7ecPeLdzBPVwFUZ8yqk4uqPZHz0fmYvV/sv8F32A4N0aM19EvemLeXGS+vez3QT8MuDrzSk/W0/PBejyMiKu5TLA3CVMw7ea4+Yuea69OypuVXs8FjfXo78Xel3fz8Wdlv2Or0++n6EmZWr808tdgGPWtrDxaCat68qbWL438lXB1xEviJ9Gj/SK98L9nWdv3sndLDetv0SN+kT5oCt66FNT+IzrcP2JI+fSv0Xr7B1SGpj4=
+  </data>
+ </layer>
+ <objectgroup id="2" name="Objects">
+  <object id="1" name="camera" x="138.545" y="153.636">
+   <point/>
+  </object>
+  <object id="2" name="border" x="0" y="1" width="287" height="286"/>
+ </objectgroup>
+</map>
