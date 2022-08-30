@@ -18,11 +18,9 @@ public class Anim {
      public Anim(String picture, int col, int row, Animation.PlayMode playMode) {
          img = new Texture(picture);
          TextureRegion region0 = new TextureRegion(img);
-
          int xCnt = region0.getRegionWidth() / col;
          int yCnt = region0.getRegionHeight() / row;
          regions0 = region0.split(xCnt, yCnt);
-
          region1 = new TextureRegion[regions0.length * regions0[0].length];
          int cnt = 0;
          for (int i = 0; i < regions0.length; i++) {
@@ -31,9 +29,15 @@ public class Anim {
              }
          }
          anm = new Animation<TextureRegion>(1/15f, region1);
-//         atlas = new TextureAtlas("atlas/unnamed.atlas");
-//         anm = new Animation<TextureRegion>(1/15f, atlas.findRegions("Ladder"));
-//         anm = new Animation<TextureRegion>(1/15f, atlas.findRegions("Jump"));
+
+         setMode(playMode);
+
+         time += Gdx.graphics.getDeltaTime();
+     }
+
+     public Anim(String region, Animation.PlayMode playMode) {
+         atlas = new TextureAtlas("atlas/fighter/fighter.atlas");
+         anm = new Animation<TextureRegion>(1/15f, atlas.findRegions(region));
          setMode(playMode);
 
          time += Gdx.graphics.getDeltaTime();
