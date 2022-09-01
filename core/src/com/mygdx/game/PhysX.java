@@ -10,10 +10,16 @@ public class PhysX {
 
     private final World world;
     private final Box2DDebugRenderer debugRenderer;
+    private final float PPM = 1;
 
     public PhysX() {
         world = new World(new Vector2(0, - 9.81f), true );
         debugRenderer = new Box2DDebugRenderer();
+        world.setContactListener(new MyContList());
+    }
+
+    public void deleteBody(Body body) {
+        world.destroyBody(body);
     }
 
     public Body addObject(RectangleMapObject object, float density) {
@@ -40,10 +46,11 @@ public class PhysX {
         def.gravityScale = (float) object.getProperties().get("gravityScale");
 
 //        def.type = BodyDef.BodyType.StaticBody;  //тип тела
-        def.position.set(rectangle.x + rectangle.width/2, rectangle.y + rectangle.height/2);  //позиция тела(текстуры)
+        def.position.set((rectangle.x + rectangle.width/2) / PPM,
+                (rectangle.y + rectangle.height/2) / PPM);  //позиция тела(текстуры)
 //        def.gravityScale = 1; //гравитация
 
-        polygonShape.setAsBox(rectangle.width/2, rectangle.height/2);
+        polygonShape.setAsBox(rectangle.width/2/PPM, rectangle.height/2/PPM);
 
         fDef.shape = polygonShape; //форма
         fDef.friction = 0; //лед
@@ -51,7 +58,14 @@ public class PhysX {
         fDef.restitution = (float) object.getProperties().get("restitution"); //упругость
 
         Body body = world.createBody(def);
-        body.createFixture(fDef).setUserData("wall");
+        String name = object.getName();
+        body.createFixture(fDef).setUserData(name);
+        if (name != null && name.equals("hero")) {
+            polygonShape.setAsBox(rectangle.width/12, rectangle.height/12, new Vector2(0, - rectangle.width/2), 0);
+            body.createFixture(fDef).setUserData("sensor");
+            body.getFixtureList().get(body.getFixtureList().size - 1).setSensor(true);
+        }
+
 
         polygonShape.dispose();
         return body;

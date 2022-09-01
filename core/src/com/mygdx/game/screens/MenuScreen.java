@@ -4,6 +4,8 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -21,6 +23,8 @@ public class MenuScreen implements Screen {
     private Texture img;
     private Texture button_start;
     private Rectangle startRect;
+    private Music music;
+    private Sound sound;
 
     private ShapeRenderer shapeRenderer;
 
@@ -33,6 +37,10 @@ public class MenuScreen implements Screen {
                 Gdx.graphics.getHeight()/2f - button_start.getHeight()/2f,
                 button_start.getWidth(), button_start.getHeight());
         shapeRenderer = new ShapeRenderer();
+//        music = Gdx.audio.newMusic(Gdx.files.internal("")); //написать имя музыки из папки assets
+//        music.setLooping(true); //повторяемость
+//        music.setVolume(0.05f);
+//        sound = Gdx.audio.newSound((Gdx.files.internal("")));  //написать имя аудио из папки assets
     }
 
     @Override
@@ -64,6 +72,11 @@ public class MenuScreen implements Screen {
             dispose();
             game.setScreen(new GameScreen(game)); }
         }
+//        else {
+////            sound.play(0.5f, 1, 0);  //pitch замедление (0.5f) к примеру
+////            sound.loop(); //включение с повтором
+////            sound.stop(); // остановка
+//        }
     }
 
     @Override
@@ -90,5 +103,8 @@ public class MenuScreen implements Screen {
     public void dispose() {
         batch.dispose();
         img.dispose();
+//        music.dispose();
+        shapeRenderer.dispose();
+//        sound.dispose();
     }
 }

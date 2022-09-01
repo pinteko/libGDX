@@ -11,7 +11,7 @@
    eJyllDkzQ1EUx+97KlRE0Fhao7KOxtISH0ATtGa0SCO0IV8haEW+gqW1NBFGZWktDTKjsvzuvHsmJ3cSBcVv/nfevee8/zvnnlcMjbmE0j/0Cl7hDd6dliEZGDMPC0oXoZG9JmiGLWPMNmRNFNPSYEwrxJy2wSExR3Cs9ASWYBkSxOWJP4CCiWJ8P/ZZHG2HDqWdkCFHFk6JPYNzuFB+BmHIMQwrPF+FNaWpMPJj8zwS+wTP8KL8JL06TFvvMOOp+PHPl12d11mnYQM2XR3ycFBDC0HlfNqdFz851juwC3vQF0b1vEXv4B4e4DqI6pRTefaCSn10f6Qv1v8n+1/wDYZzI+hYDf/iJ+71RfrbxX439ECvyzOn/Ox6fj5Yj4YRY6ov4+xNwCRMuT6mfvFz4+XJeL3S69mgvh99X+z79l1//F7Ze2x9+vUUPxlTPS/15qvf9bGoZrQUVvzsm+p5qTdfCZdHZknmSfzoeZFa+PdZ1va77Lslh51v8SPzInXQ5L11Iaj+R8TcP2JAzelf1c72DzX6pd8=
   </data>
  </layer>
- <objectgroup id="4" name="static_objects" visible="0">
+ <objectgroup id="4" name="static_objects">
   <object id="3" name="low1" x="79" y="208" width="96.5" height="31.5">
    <properties>
     <property name="BodyType" value="StaticBody"/>
@@ -69,7 +69,7 @@
    </properties>
   </object>
  </objectgroup>
- <objectgroup id="5" name="kinematic_objects">
+ <objectgroup id="5" name="kinematic_objects" visible="0">
   <object id="7" name="deep1" x="14.6667" y="144" width="63.9167" height="64">
    <properties>
     <property name="BodyType" value="KinematicBody"/>
@@ -125,7 +125,7 @@
    <property name="restitution" type="float" value="0"/>
   </properties>
  </objectgroup>
- <objectgroup id="2" name="Objects" visible="0">
+ <objectgroup id="2" name="Objects">
   <object id="1" name="camera" x="138.545" y="153.636">
    <point/>
   </object>
@@ -143,7 +143,7 @@
    </properties>
   </object>
  </objectgroup>
- <layer id="3" name="spirit" width="18" height="18">
+ <layer id="3" name="spirit" width="18" height="18" visible="0">
   <data encoding="base64" compression="zlib">
    eJxjYBgFo4Aw0B9k5pgPMnNGwfAAAPtvAM0=
   </data>
