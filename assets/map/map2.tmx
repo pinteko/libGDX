@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.9" tiledversion="1.9.1" orientation="orthogonal" renderorder="right-down" width="40" height="27" tilewidth="16" tileheight="16" infinite="0" nextlayerid="9" nextobjectid="38">
+ <tileset firstgid="1" name="tile3" tilewidth="16" tileheight="16" spacing="1" margin="1" tilecount="56" columns="7">
+  <image source="tile3.png" width="135" height="136"/>
+ </tileset>
+ <tileset firstgid="57" name="tile2" tilewidth="16" tileheight="16" spacing="1" margin="1" tilecount="396" columns="22">
+  <image source="tile2.png" width="378" height="306"/>
+ </tileset>
+ <layer id="1" name="main" width="40" height="27">
+  <data encoding="base64" compression="zlib">
+   eJztlrEKgDAMRLtWdPYD3FoXJ///z7TQgBZCk6tkMQ9uEE7uERyMIYRoHA3a/iju92ZXdDdgT9ufgBDJwG8E9xvD0m8D3jmAPdQvKfvznQXYk/bPGkLqR17aPbRP9PxaL3SP67f3auH8OK/e3ld9onzr+fHc80L32n7vbkS5X66ReHF7mr7UrUD3oyB70v5qGOv/JcdxHOefXOwsCtg=
+  </data>
+ </layer>
+ <layer id="3" name="grass" width="40" height="27" offsetx="17" offsety="47">
+  <data encoding="base64" compression="zlib">
+   eJztwzENAAAMA6BKmX+VU9C/ByQkAMCSKwEA6B78ugDB
+  </data>
+ </layer>
+ <objectgroup id="4" name="static_objects">
+  <properties>
+   <property name="BodyType" value="StaticBody"/>
+   <property name="gravityScale" type="float" value="1"/>
+   <property name="restitution" type="float" value="0"/>
+  </properties>
+  <object id="1" name="wall_l" x="-0.5" y="2" width="16.5" height="270.5">
+   <properties>
+    <property name="BodyType" value="StaticBody"/>
+    <property name="gravityScale" type="float" value="1"/>
+    <property name="restitution" type="float" value="0"/>
+   </properties>
+  </object>
+  <object id="2" name="wall_r" x="448" y="2" width="15.5" height="271">
+   <properties>
+    <property name="BodyType" value="StaticBody"/>
+    <property name="gravityScale" type="float" value="1"/>
+    <property name="restitution" type="float" value="0"/>
+   </properties>
+  </object>
+  <object id="4" name="down" x="18" y="258" width="431" height="15">
+   <properties>
+    <property name="BodyType" value="StaticBody"/>
+    <property name="gravityScale" type="float" value="1"/>
+    <property name="restitution" type="float" value="0"/>
+   </properties>
+  </object>
+  <object id="5" name="state" x="48" y="241.5" width="32" height="16.5">
+   <properties>
+    <property name="BodyType" value="StaticBody"/>
+    <property name="gravityScale" type="float" value="1"/>
+    <property name="restitution" type="float" value="0"/>
+   </properties>
+  </object>
+  <object id="6" name="state" x="65" y="225" width="32" height="16">
+   <properties>
+    <property name="BodyType" value="StaticBody"/>
+    <property name="gravityScale" type="float" value="1"/>
+    <property name="restitution" type="float" value="0"/>
+   </properties>
+  </object>
+  <object id="7" name="state" x="97" y="193" width="32" height="16">
+   <properties>
+    <property name="BodyType" value="StaticBody"/>
+    <property name="gravityScale" type="float" value="1"/>
+    <property name="restitution" type="float" value="0"/>
+   </properties>
+  </object>
+  <object id="8" name="state" x="161" y="161" width="32" height="16">
+   <properties>
+    <property name="BodyType" value="StaticBody"/>
+    <property name="gravityScale" type="float" value="1"/>
+    <property name="restitution" type="float" value="0"/>
+   </properties>
+  </object>
+  <object id="9" name="liana" x="224" y="129" width="15.5" height="128">
+   <properties>
+    <property name="BodyType" value="StaticBody"/>
+    <property name="gravityScale" type="float" value="1"/>
+    <property name="restitution" type="float" value="0"/>
+   </properties>
+  </object>
+  <object id="10" name="qube" x="240.5" y="209.5" width="14.5" height="15.5">
+   <properties>
+    <property name="BodyType" value="StaticBody"/>
+    <property name="gravityScale" type="float" value="1"/>
+    <property name="restitution" type="float" value="0"/>
+   </properties>
+  </object>
+  <object id="11" name="qube" x="240" y="226" width="31" height="30.5">
+   <properties>
+    <property name="BodyType" value="StaticBody"/>
+    <property name="gravityScale" type="float" value="1"/>
+    <property name="restitution" type="float" value="0"/>
+   </properties>
+  </object>
+  <object id="15" name="liana" x="432" y="49" width="15.5" height="95">
+   <properties>
+    <property name="BodyType" value="StaticBody"/>
+    <property name="gravityScale" type="float" value="1"/>
+    <property name="restitution" type="float" value="0"/>
+   </properties>
+  </object>
+  <object id="16" name="state" x="192" y="65.5" width="207.5" height="15">
+   <properties>
+    <property name="BodyType" value="StaticBody"/>
+    <property name="gravityScale" type="float" value="1"/>
+    <property name="restitution" type="float" value="0"/>
+   </properties>
+  </object>
+  <object id="17" name="present" x="256" y="49.5" width="15" height="15">
+   <properties>
+    <property name="BodyType" value="StaticBody"/>
+    <property name="gravityScale" type="float" value="1"/>
+    <property name="restitution" type="float" value="0"/>
+   </properties>
+  </object>
+  <object id="18" name="up" x="17" y="2" width="430" height="16">
+   <properties>
+    <property name="BodyType" value="StaticBody"/>
+    <property name="gravityScale" type="float" value="1"/>
+    <property name="restitution" type="float" value="0"/>
+   </properties>
+  </object>
+  <object id="29" name="state" x="415.5" y="143.5" width="32.5" height="16">
+   <properties>
+    <property name="BodyType" value="StaticBody"/>
+    <property name="gravityScale" type="float" value="1"/>
+    <property name="restitution" type="float" value="0"/>
+   </properties>
+  </object>
+  <object id="30" name="state" x="384" y="159.5" width="31.5" height="16">
+   <properties>
+    <property name="BodyType" value="StaticBody"/>
+    <property name="gravityScale" type="float" value="1"/>
+    <property name="restitution" type="float" value="0"/>
+   </properties>
+  </object>
+  <object id="31" name="state" x="352" y="175.5" width="31" height="17">
+   <properties>
+    <property name="BodyType" value="StaticBody"/>
+    <property name="gravityScale" type="float" value="1"/>
+    <property name="restitution" type="float" value="0"/>
+   </properties>
+  </object>
+  <object id="32" name="state" x="320.5" y="192.5" width="30.5" height="15">
+   <properties>
+    <property name="BodyType" value="StaticBody"/>
+    <property name="gravityScale" type="float" value="1"/>
+    <property name="restitution" type="float" value="0"/>
+   </properties>
+  </object>
+  <object id="33" name="state" x="288.5" y="208.5" width="31.5" height="15">
+   <properties>
+    <property name="BodyType" value="StaticBody"/>
+    <property name="gravityScale" type="float" value="1"/>
+    <property name="restitution" type="float" value="0"/>
+   </properties>
+  </object>
+  <object id="34" name="state" x="271.5" y="224.5" width="16" height="15.5">
+   <properties>
+    <property name="BodyType" value="StaticBody"/>
+    <property name="gravityScale" type="float" value="1"/>
+    <property name="restitution" type="float" value="0"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup id="6" name="border" visible="0">
+  <object id="27" name="border" x="0" y="0" width="464" height="272">
+   <properties>
+    <property name="BodyType" value="StaticBody"/>
+    <property name="gravityScale" type="float" value="1"/>
+    <property name="restitution" type="float" value="0"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup id="5" name="dynamic_objects">
+  <object id="19" name="hero" x="20.25" y="198" width="24" height="22">
+   <properties>
+    <property name="BodyType" value="DynamicBody"/>
+    <property name="gravityScale" type="float" value="3"/>
+    <property name="restitution" type="float" value="0"/>
+   </properties>
+  </object>
+  <object id="20" name="camera" x="181" y="75">
+   <point/>
+  </object>
+  <object id="36" name="ball" x="398.167" y="103.333" width="22.6667" height="18.6667">
+   <properties>
+    <property name="BodyType" value="DynamicBody"/>
+    <property name="gravityScale" type="float" value="0"/>
+    <property name="restitution" type="float" value="0"/>
+   </properties>
+  </object>
+ </objectgroup>
+</map>

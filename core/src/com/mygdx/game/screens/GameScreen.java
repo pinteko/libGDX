@@ -45,7 +45,10 @@ public class GameScreen implements Screen {
     private final Rectangle heroRect;
     private final Rectangle ballRect;
     public static ArrayList<Body> bodies;
-    private  Music music;
+    public static  Music musicHero;
+    public static  Music musicBall;
+    public static  Music musicGameOver;
+    public static Music musicPresent;
     private  Sound sound;
     float x;
     float y;
@@ -60,9 +63,7 @@ public class GameScreen implements Screen {
         camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         map = new TmxMapLoader().load("map/map2.tmx");
         mapRenderer = new OrthogonalTiledMapRenderer(map);
-//        music = Gdx.audio.newMusic(Gdx.files.internal("")); //написать имя музыки из папки assets
-//        music.setLooping(true); //повторяемость
-//        music.setVolume(0.05f);
+        initMusic();
 //        sound = Gdx.audio.newSound((Gdx.files.internal("")));  //написать имя аудио из папки assets
         bodies = new ArrayList<>();
         rock = new Texture("rock.png");
@@ -92,6 +93,21 @@ public class GameScreen implements Screen {
         y = mapSize.y;
         direction = true;
         camera.zoom = 0.5f;
+    }
+
+    private void initMusic() {
+        musicHero = Gdx.audio.newMusic(Gdx.files.internal("hero.wav")); //написать имя музыки из папки assets
+        musicHero.setLooping(false); //повторяемость
+        musicHero.setVolume(0.5f);
+        musicBall = Gdx.audio.newMusic(Gdx.files.internal("rock.wav")); //написать имя музыки из папки assets
+        musicBall.setLooping(false); //повторяемость
+        musicBall.setVolume(0.5f);
+        musicGameOver = Gdx.audio.newMusic(Gdx.files.internal("gameover.wav")); //написать имя музыки из папки assets
+        musicGameOver.setLooping(false); //повторяемость
+        musicGameOver.setVolume(0.5f);
+        musicPresent = Gdx.audio.newMusic(Gdx.files.internal("present.wav"));
+        musicGameOver.setLooping(false); //повторяемость
+        musicGameOver.setVolume(0.5f);
     }
 
     @Override
@@ -124,10 +140,16 @@ public class GameScreen implements Screen {
         if (Gdx.input.isKeyJustPressed(Input.Keys.P)) camera.zoom += 0.1f;
         if (Gdx.input.isKeyJustPressed(Input.Keys.O) && camera.zoom > 0) camera.zoom -= 0.1f;
 
-        if (bodyHero.getLinearVelocity().x <= -20 && animation.getFrame().isFlipX()) {
+        if (bodyHero.getLinearVelocity().x <= -30 && animation.getFrame().isFlipX()) {
+            animation.getFrame().flip(true, false);
+        }
+        if (bodyHero.getLinearVelocity().x > 30 && !animation.getFrame().isFlipX()) {
             animation.getFrame().flip(true, false);}
-        if (bodyHero.getLinearVelocity().x > 20 && !animation.getFrame().isFlipX()) {
-            animation.getFrame().flip(true, false);}
+
+        if (musicGameOver.isPlaying()) {
+            dispose();
+            game.setScreen(new MenuScreen(game));
+        }
 
 
         camera.position.x = bodyHero.getPosition().x;
@@ -202,7 +224,6 @@ public class GameScreen implements Screen {
         if (bodies.size() > 0) {
             bodyBall.setGravityScale(5.0f);
             bodyBall.applyForceToCenter(new Vector2(0, -1000000), true);
-            System.out.println(bodies.get(0).toString());
         }
         bodies.clear();
     }
@@ -233,7 +254,9 @@ public class GameScreen implements Screen {
         batch.dispose();
         animation.dispose();
         shapeRenderer.dispose();
-//        music.dispose();
+        musicHero.dispose();
+        musicGameOver.dispose();
+        musicBall.dispose();
 //        sound.dispose();
     }
 }

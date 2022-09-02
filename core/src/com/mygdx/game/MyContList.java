@@ -1,6 +1,5 @@
 package com.mygdx.game;
 
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.mygdx.game.screens.GameScreen;
 
@@ -15,18 +14,53 @@ public class MyContList implements ContactListener {
             String tmpB = (String) b.getUserData();
             if (tmpA.equals("hero") && tmpB.equals("qube")) {
                 GameScreen.bodies.add(b.getBody());
-                b.getBody().setGravityScale(3.0f);
 //                a.getBody().applyForceToCenter(new Vector2(100000, 0), true);
 //                b.getBody().setActive(false);
             }
             if (tmpA.equals("qube") && tmpB.equals("hero")) {
-                a.getBody().setGravityScale(3.0f);
                 GameScreen.bodies.add(a.getBody());
 //                b.getBody().applyForceToCenter(new Vector2(100000, 0), true);
 //                a.getBody().setActive(false);
 
             }
+            if (tmpA.equals("hero") && tmpB.equals("state")) {
+                GameScreen.musicHero.play();
+            }
+            if (tmpA.equals("state") && tmpB.equals("hero")) {
+                GameScreen.musicHero.play();
+
+            }
+            if (tmpA.equals("state") && tmpB.equals("ball")) {
+                GameScreen.musicBall.play();
+            }
+            if (tmpA.equals("ball") && tmpB.equals("state")) {
+                GameScreen.musicBall.play();
+
+            }
+            if (tmpA.equals("hero") && tmpB.equals("ball")) {
+                GameScreen.musicGameOver.play();
+            }
+            if (tmpA.equals("ball") && tmpB.equals("hero")) {
+                GameScreen.musicGameOver.play();
+
+            }
+            if (tmpA.equals("hero") && tmpB.equals("present")) {
+                GameScreen.musicPresent.play();
+            }
+            if (tmpA.equals("present") && tmpB.equals("hero")) {
+                GameScreen.musicPresent.play();
+
+            }
+            if (tmpA.equals("hero") && tmpB.equals("liana")) {
+
+            }
+            if (tmpA.equals("liana") && tmpB.equals("hero")) {
+
+
+            }
         }
+
+
     }
 
     @Override
