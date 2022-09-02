@@ -36,7 +36,7 @@
     <property name="restitution" type="float" value="0"/>
    </properties>
   </object>
-  <object id="4" name="down" x="18" y="258" width="431" height="15">
+  <object id="4" name="state" x="18" y="258" width="431" height="15">
    <properties>
     <property name="BodyType" value="StaticBody"/>
     <property name="gravityScale" type="float" value="1"/>
@@ -120,42 +120,42 @@
     <property name="restitution" type="float" value="0"/>
    </properties>
   </object>
-  <object id="29" name="state" x="415.5" y="143.5" width="32.5" height="16">
+  <object id="29" name="qube" x="415.5" y="143.5" width="32.5" height="16">
    <properties>
     <property name="BodyType" value="StaticBody"/>
     <property name="gravityScale" type="float" value="1"/>
     <property name="restitution" type="float" value="0"/>
    </properties>
   </object>
-  <object id="30" name="state" x="384" y="159.5" width="31.5" height="16">
+  <object id="30" name="qube" x="384" y="159.5" width="31.5" height="16">
    <properties>
     <property name="BodyType" value="StaticBody"/>
     <property name="gravityScale" type="float" value="1"/>
     <property name="restitution" type="float" value="0"/>
    </properties>
   </object>
-  <object id="31" name="state" x="352" y="175.5" width="31" height="17">
+  <object id="31" name="qube" x="352" y="175.5" width="31" height="17">
    <properties>
     <property name="BodyType" value="StaticBody"/>
     <property name="gravityScale" type="float" value="1"/>
     <property name="restitution" type="float" value="0"/>
    </properties>
   </object>
-  <object id="32" name="state" x="320.5" y="192.5" width="30.5" height="15">
+  <object id="32" name="qube" x="320.5" y="192.5" width="30.5" height="15">
    <properties>
     <property name="BodyType" value="StaticBody"/>
     <property name="gravityScale" type="float" value="1"/>
     <property name="restitution" type="float" value="0"/>
    </properties>
   </object>
-  <object id="33" name="state" x="288.5" y="208.5" width="31.5" height="15">
+  <object id="33" name="qube" x="288.5" y="208.5" width="31.5" height="15">
    <properties>
     <property name="BodyType" value="StaticBody"/>
     <property name="gravityScale" type="float" value="1"/>
     <property name="restitution" type="float" value="0"/>
    </properties>
   </object>
-  <object id="34" name="state" x="271.5" y="224.5" width="16" height="15.5">
+  <object id="34" name="qube" x="271.5" y="224.5" width="16" height="15.5">
    <properties>
     <property name="BodyType" value="StaticBody"/>
     <property name="gravityScale" type="float" value="1"/>
@@ -176,7 +176,7 @@
   <object id="19" name="hero" x="20.25" y="198" width="24" height="22">
    <properties>
     <property name="BodyType" value="DynamicBody"/>
-    <property name="gravityScale" type="float" value="3"/>
+    <property name="gravityScale" type="float" value="3.5"/>
     <property name="restitution" type="float" value="0"/>
    </properties>
   </object>

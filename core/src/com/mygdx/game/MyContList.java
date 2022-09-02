@@ -23,17 +23,17 @@ public class MyContList implements ContactListener {
 //                a.getBody().setActive(false);
 
             }
-            if (tmpA.equals("hero") && tmpB.equals("state")) {
+            if (tmpA.equals("hero") && (tmpB.equals("state") || tmpB.equals("qube"))) {
                 GameScreen.musicHero.play();
             }
-            if (tmpA.equals("state") && tmpB.equals("hero")) {
+            if ((tmpA.equals("state") || tmpA.equals("qube")) && tmpB.equals("hero")) {
                 GameScreen.musicHero.play();
 
             }
-            if (tmpA.equals("state") && tmpB.equals("ball")) {
+            if (tmpA.equals("qube") && tmpB.equals("ball")) {
                 GameScreen.musicBall.play();
             }
-            if (tmpA.equals("ball") && tmpB.equals("state")) {
+            if (tmpA.equals("ball") && tmpB.equals("qube")) {
                 GameScreen.musicBall.play();
 
             }
@@ -52,11 +52,16 @@ public class MyContList implements ContactListener {
 
             }
             if (tmpA.equals("hero") && tmpB.equals("liana")) {
-
+                    a.getBody().setGravityScale(0f);
             }
             if (tmpA.equals("liana") && tmpB.equals("hero")) {
-
-
+                a.getBody().setGravityScale(0f);
+            }
+            if (tmpA.equals("sensor") && (tmpB.equals("state") || tmpB.equals("qube"))) {
+                GameScreen.contactGround = true;
+            }
+            if ((tmpA.equals("state") || tmpA.equals("qube")) && tmpB.equals("sensor")) {
+                GameScreen.contactGround = true;
             }
         }
 
@@ -65,7 +70,24 @@ public class MyContList implements ContactListener {
 
     @Override
     public void endContact(Contact contact) {
-
+        Fixture a = contact.getFixtureA();
+        Fixture b = contact.getFixtureB();
+        if (a.getUserData() != null && b.getUserData() != null) {
+            String tmpA = (String) a.getUserData();
+            String tmpB = (String) b.getUserData();
+            if (tmpA.equals("sensor") && (tmpB.equals("state") || tmpB.equals("qube"))) {
+                GameScreen.contactGround = false;
+            }
+            if ((tmpA.equals("state") || tmpA.equals("qube")) && tmpB.equals("sensor")) {
+                GameScreen.contactGround = false;
+            }
+            if (tmpA.equals("hero") && tmpB.equals("liana")) {
+                a.getBody().setGravityScale(4.0f);
+            }
+            if (tmpA.equals("liana") && tmpB.equals("hero")) {
+                a.getBody().setGravityScale(4.0f);
+            }
+        }
     }
 
     @Override

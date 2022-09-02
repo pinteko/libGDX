@@ -49,6 +49,7 @@ public class GameScreen implements Screen {
     public static  Music musicBall;
     public static  Music musicGameOver;
     public static Music musicPresent;
+    public static boolean contactGround;
     private  Sound sound;
     float x;
     float y;
@@ -64,6 +65,7 @@ public class GameScreen implements Screen {
         map = new TmxMapLoader().load("map/map2.tmx");
         mapRenderer = new OrthogonalTiledMapRenderer(map);
         initMusic();
+        contactGround = false;
 //        sound = Gdx.audio.newSound((Gdx.files.internal("")));  //написать имя аудио из папки assets
         bodies = new ArrayList<>();
         rock = new Texture("rock.png");
@@ -119,17 +121,18 @@ public class GameScreen implements Screen {
     public void render(float delta) {
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.A)) {
-            bodyHero.applyForceToCenter(new Vector2(-1000000, 0), true);
-            animation = new Anim("start", Animation.PlayMode.LOOP);}
-        if (Gdx.input.isKeyJustPressed(Input.Keys.D)) {
-            bodyHero.applyForceToCenter(new Vector2(1000000, 0), true);
+            bodyHero.applyForceToCenter(new Vector2(-1000, 0), true);
             animation = new Anim("start", Animation.PlayMode.LOOP);
-        }
-        if (Gdx.input.isKeyJustPressed(Input.Keys.W)) {
-            bodyHero.applyForceToCenter(new Vector2(0, 1000000), true);
+            direction = true;}
+        if (Gdx.input.isKeyJustPressed(Input.Keys.D)) {
+            bodyHero.applyForceToCenter(new Vector2(1000, 0), true);
+            animation = new Anim("start", Animation.PlayMode.LOOP);
+            direction = false;}
+        if (Gdx.input.isKeyJustPressed(Input.Keys.W) && contactGround) {
+            bodyHero.applyForceToCenter(new Vector2(0, 3000), true);
             animation = new Anim("jump", Animation.PlayMode.LOOP);}
         if (Gdx.input.isKeyJustPressed(Input.Keys.S)) {
-            bodyHero.applyForceToCenter(new Vector2(0, -1000000), true);
+            bodyHero.applyForceToCenter(new Vector2(0, -3000), true);
             animation = new Anim("jump", Animation.PlayMode.LOOP);
         }
 
@@ -140,10 +143,10 @@ public class GameScreen implements Screen {
         if (Gdx.input.isKeyJustPressed(Input.Keys.P)) camera.zoom += 0.1f;
         if (Gdx.input.isKeyJustPressed(Input.Keys.O) && camera.zoom > 0) camera.zoom -= 0.1f;
 
-        if (bodyHero.getLinearVelocity().x <= -30 && animation.getFrame().isFlipX()) {
+        if (direction && animation.getFrame().isFlipX()) {
             animation.getFrame().flip(true, false);
         }
-        if (bodyHero.getLinearVelocity().x > 30 && !animation.getFrame().isFlipX()) {
+        if (!direction && !animation.getFrame().isFlipX()) {
             animation.getFrame().flip(true, false);}
 
         if (musicGameOver.isPlaying()) {
