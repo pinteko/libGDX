@@ -37,10 +37,12 @@ public class MenuScreen implements Screen {
                 Gdx.graphics.getHeight()/2f - button_start.getHeight()/2f,
                 button_start.getWidth(), button_start.getHeight());
         shapeRenderer = new ShapeRenderer();
-//        music = Gdx.audio.newMusic(Gdx.files.internal("")); //написать имя музыки из папки assets
-//        music.setLooping(true); //повторяемость
-//        music.setVolume(0.05f);
-//        sound = Gdx.audio.newSound((Gdx.files.internal("")));  //написать имя аудио из папки assets
+        music = Gdx.audio.newMusic(Gdx.files.internal("menu.wav")); //написать имя музыки из папки assets
+        music.setLooping(true); //повторяемость
+        music.setVolume(0.25f);
+        music.play();
+//        sound = Gdx.audio.newSound((Gdx.files.internal("menu.wav")));  //написать имя аудио из папки assets
+//        sound.setLooping(1L, true);
     }
 
     @Override
@@ -103,7 +105,7 @@ public class MenuScreen implements Screen {
     public void dispose() {
         batch.dispose();
         img.dispose();
-//        music.dispose();
+        music.dispose();
         shapeRenderer.dispose();
 //        sound.dispose();
     }

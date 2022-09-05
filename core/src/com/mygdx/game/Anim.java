@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.utils.Array;
 
 public class Anim {
    private Texture img;
@@ -37,7 +38,7 @@ public class Anim {
 
      public Anim(String region, Animation.PlayMode playMode) {
          atlas = new TextureAtlas("atlas/fighter/fighter.atlas");
-         anm = new Animation<TextureRegion>(1/15f, atlas.findRegions(region));
+         anm = new Animation<TextureRegion>(1/10f, atlas.findRegions(region));
          setMode(playMode);
 
          time += Gdx.graphics.getDeltaTime();
