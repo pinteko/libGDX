@@ -63,6 +63,12 @@ public class MyContList implements ContactListener {
             if ((tmpA.equals("state") || tmpA.equals("qube")) && tmpB.equals("sensor")) {
                 GameScreen.contactGround = true;
             }
+            if (tmpA.equals("footEnemy") && (tmpB.equals("stop"))) {
+                GameScreen.stopEnemy = true;
+            }
+            if ((tmpA.equals("stop") || tmpA.equals("footEnemy"))) {
+                GameScreen.stopEnemy = true;
+            }
         }
 
 

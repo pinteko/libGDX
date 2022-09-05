@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -20,9 +19,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.mygdx.game.Anim;
-import com.mygdx.game.Main;
-import com.mygdx.game.PhysX;
+import com.mygdx.game.*;
 
 import java.util.ArrayList;
 
@@ -31,7 +28,13 @@ public class GameScreen implements Screen {
     Main game;
     private SpriteBatch batch;
     private Anim animation;
-    boolean direction;
+    private final Anim animationStart;
+    private final Anim animationJump;
+    private final Anim animationPunch;
+
+    private Enemy enemy;
+    boolean directionHero;
+    boolean directionEnemy;
     private ShapeRenderer shapeRenderer;
     private OrthographicCamera camera;
     private TiledMap map;
@@ -42,15 +45,19 @@ public class GameScreen implements Screen {
     public static PhysX physX;
     private final Body bodyHero;
     private final Body bodyBall;
+    private final Body bodyEnemy;
     private final Rectangle heroRect;
     private final Rectangle ballRect;
+    private final Rectangle enemyRect;
     public static ArrayList<Body> bodies;
+
+    private Array<RectangleMapObject> objects;
     public static  Music musicHero;
     public static  Music musicBall;
     public static  Music musicGameOver;
     public static Music musicPresent;
     public static boolean contactGround;
-    private  Sound sound;
+    public static boolean stopEnemy;
     float x;
     float y;
 
@@ -60,6 +67,10 @@ public class GameScreen implements Screen {
         this.game = game;
         batch = new SpriteBatch();
         animation = new Anim("counter", Animation.PlayMode.LOOP);
+        animationStart = new Anim("start", Animation.PlayMode.LOOP);
+        animationJump = new Anim("jump", Animation.PlayMode.LOOP);
+        animationPunch = new Anim("punch", Animation.PlayMode.LOOP);
+        enemy = new Enemy();
         shapeRenderer = new ShapeRenderer();
         camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         map = new TmxMapLoader().load("map/map2.tmx");
@@ -82,9 +93,12 @@ public class GameScreen implements Screen {
         rmp = (RectangleMapObject) map.getLayers().get("dynamic_objects").getObjects().get("ball");
         ballRect = rmp.getRectangle();
         bodyBall = physX.addObject(rmp, 1);
+        rmp = (RectangleMapObject) map.getLayers().get("dynamic_objects").getObjects().get("enemy");
+        enemyRect = rmp.getRectangle();
+        bodyEnemy = physX.addObject(rmp, 0);
         rmp = (RectangleMapObject) map.getLayers().get("border").getObjects().get("border");
         mapSize = rmp.getRectangle();
-        Array<RectangleMapObject> objects = map.getLayers().get("static_objects").getObjects().getByType(RectangleMapObject.class);
+        objects = map.getLayers().get("static_objects").getObjects().getByType(RectangleMapObject.class);
 //        objects.addAll(map.getLayers().get("kinematic_objects").getObjects().getByType(RectangleMapObject.class));
 //        objects.addAll(map.getLayers().get("dynamic_objects").getObjects().getByType(RectangleMapObject.class));
         for (int i = 0; i < objects.size; i++) {
@@ -93,7 +107,9 @@ public class GameScreen implements Screen {
         }
         x = mapSize.x;
         y = mapSize.y;
-        direction = true;
+        directionHero = true;
+        directionEnemy = true;
+        stopEnemy = false;
         camera.zoom = 0.5f;
     }
 
@@ -120,33 +136,35 @@ public class GameScreen implements Screen {
     @Override
     public void render(float delta) {
 
+        float dt = Gdx.graphics.getDeltaTime();
+
         if (Gdx.input.isKeyJustPressed(Input.Keys.A)) {
             bodyHero.applyForceToCenter(new Vector2(-1000, 0), true);
-            animation = new Anim("start", Animation.PlayMode.LOOP);
-            direction = true;}
+            animation = animationStart;
+            directionHero = true;}
         if (Gdx.input.isKeyJustPressed(Input.Keys.D)) {
             bodyHero.applyForceToCenter(new Vector2(1000, 0), true);
-            animation = new Anim("start", Animation.PlayMode.LOOP);
-            direction = false;}
+            animation = animationStart;
+            directionHero = false;}
         if (Gdx.input.isKeyJustPressed(Input.Keys.W) && contactGround) {
             bodyHero.applyForceToCenter(new Vector2(0, 3000), true);
-            animation = new Anim("jump", Animation.PlayMode.LOOP);}
+            animation = animationJump;}
         if (Gdx.input.isKeyJustPressed(Input.Keys.S)) {
             bodyHero.applyForceToCenter(new Vector2(0, -3000), true);
-            animation = new Anim("jump", Animation.PlayMode.LOOP);
+            animation = animationJump;
         }
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
-            animation = new Anim("punch", Animation.PlayMode.LOOP);
+            animation = animationPunch;
         }
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.P)) camera.zoom += 0.1f;
         if (Gdx.input.isKeyJustPressed(Input.Keys.O) && camera.zoom > 0) camera.zoom -= 0.1f;
 
-        if (direction && animation.getFrame().isFlipX()) {
+        if (directionHero && animation.getFrame().isFlipX()) {
             animation.getFrame().flip(true, false);
         }
-        if (!direction && !animation.getFrame().isFlipX()) {
+        if (!directionHero && !animation.getFrame().isFlipX()) {
             animation.getFrame().flip(true, false);}
 
         if (musicGameOver.isPlaying()) {
@@ -154,12 +172,37 @@ public class GameScreen implements Screen {
             game.setScreen(new MenuScreen(game));
         }
 
+        if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
+                fire(directionHero);
+        }
+
+        if (enemyRect.x >= 380) {
+            enemy.getAnimEnemy().getFrame().flip(true, false);
+            directionEnemy = false;
+
+        }
+        if (enemyRect.x < 275) {
+            enemy.getAnimEnemy().getFrame().flip(true, false);
+            directionEnemy = true;
+
+        }
+        if (directionEnemy) {
+            bodyEnemy.applyForceToCenter(new Vector2(10, 0), true);
+        } else {
+//            enemyRect.x -= animation.getFrame().getRegionWidth()/100f;
+//            bodyEnemy.getPosition().x -= animation.getFrame().getRegionWidth()/100f;
+            bodyEnemy.applyForceToCenter(new Vector2(-10, 0), true);
+        }
+//        if (stopEnemy) {
+//            bodyEnemy.setActive(false);
+//        }
+
 
         camera.position.x = bodyHero.getPosition().x;
         camera.position.y = bodyHero.getPosition().y;
         camera.update();
         ScreenUtils.clear(Color.YELLOW);
-        animation.setTime(Gdx.graphics.getDeltaTime());
+        animation.setTime(dt);
 
 
 //        if (x >= Gdx.graphics.getWidth() - animation.getFrame().getRegionWidth()) {
@@ -193,9 +236,14 @@ public class GameScreen implements Screen {
         heroRect.y = bodyHero.getPosition().y - heroRect.height/2;
         ballRect.x = bodyBall.getPosition().x - ballRect.width/2;
         ballRect.y = bodyBall.getPosition().y - ballRect.height/2;
+        enemyRect.x = bodyEnemy.getPosition().x - enemyRect.width/2;
+        enemyRect.y = bodyEnemy.getPosition().y - enemyRect.height/2;
+        update(dt);
         batch.begin();
         batch.draw(rock, ballRect.x, ballRect.y, ballRect.width, ballRect.height);
         batch.draw(animation.getFrame(), heroRect.x, heroRect.y, heroRect.width, heroRect.height);
+        batch.draw(enemy.getAnimEnemy().getFrame(), enemyRect.x, enemyRect.y, enemyRect.width, enemyRect.height);
+        BulletEmitter.getInstance().render(batch, directionHero);
         batch.end();
 
 
@@ -226,9 +274,31 @@ public class GameScreen implements Screen {
 //        }
         if (bodies.size() > 0) {
             bodyBall.setGravityScale(5.0f);
-            bodyBall.applyForceToCenter(new Vector2(0, -1000000), true);
+            bodyBall.applyForceToCenter(new Vector2(0, -10000), true);
         }
         bodies.clear();
+    }
+
+    public void fire(boolean direction) {
+        for (Bullet o : BulletEmitter.getInstance().bullets) {
+            if (!o.active) {
+                    o.setup(heroRect.x, heroRect.y + heroRect.height/2, heroRect.x + 400, heroRect.y, direction);
+                break;
+            }
+        }
+    }
+
+    public void update(float dt) {
+        BulletEmitter.getInstance().update(dt * 4);
+        for (Bullet b : BulletEmitter.getInstance().bullets) {
+            if (b.active) {
+                for (RectangleMapObject o: objects) {
+                    if (o.getRectangle().contains(b.position.x, b.position.y)) {
+                        b.destroy();
+                    }
+                }
+            }
+        }
     }
 
     @Override
