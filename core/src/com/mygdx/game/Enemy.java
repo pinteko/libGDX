@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 
 public class Enemy {
 
-    private Anim animEnemy;
+    private final Anim animEnemy;
 
     public Enemy() {
         animEnemy = new Anim("enemy.png", 6, 5, Animation.PlayMode.LOOP);

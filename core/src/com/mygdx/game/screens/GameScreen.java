@@ -169,7 +169,7 @@ public class GameScreen implements Screen {
 
         if (musicGameOver.isPlaying()) {
             dispose();
-            game.setScreen(new MenuScreen(game));
+            game.setScreen(new GameOverScreen(game));
         }
 
         if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
