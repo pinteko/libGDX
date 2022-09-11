@@ -24,15 +24,13 @@ public class MenuScreen implements Screen {
     private Texture button_start;
     private Rectangle startRect;
     private Music music;
-    private Sound sound;
-
     private ShapeRenderer shapeRenderer;
 
     public MenuScreen(Main main) {
         game = main;
         batch = new SpriteBatch();
         img = new Texture("city.jpg");
-        button_start = new Texture("button_start.png");
+        button_start = new Texture("play.jpg");
         startRect = new Rectangle(Gdx.graphics.getWidth()/2f - button_start.getWidth()/2f,
                 Gdx.graphics.getHeight()/2f - button_start.getHeight()/2f,
                 button_start.getWidth(), button_start.getHeight());
@@ -62,7 +60,7 @@ public class MenuScreen implements Screen {
         batch.end();
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        shapeRenderer.setColor(Color.YELLOW);
+        shapeRenderer.setColor(Color.BLACK);
         shapeRenderer.rect(startRect.x, startRect.y, startRect.width, startRect.height);
         shapeRenderer.end();
 
@@ -105,8 +103,8 @@ public class MenuScreen implements Screen {
     public void dispose() {
         batch.dispose();
         img.dispose();
+        button_start.dispose();
         music.dispose();
         shapeRenderer.dispose();
-//        sound.dispose();
     }
 }

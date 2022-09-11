@@ -61,12 +61,12 @@ public class PhysX {
         String name = object.getName();
         body.createFixture(fDef).setUserData(name);
         if (name != null && name.equals("hero")) {
-            polygonShape.setAsBox(rectangle.width/12, rectangle.height/12, new Vector2(0, - rectangle.width/2), 0);
+            polygonShape.setAsBox(rectangle.width * 0.45f, rectangle.height/12, new Vector2(0, - rectangle.width/2), 0);
             body.createFixture(fDef).setUserData("sensor");
             body.getFixtureList().get(body.getFixtureList().size - 1).setSensor(true);
         }
         if (name != null && name.equals("enemy")) {
-            polygonShape.setAsBox(rectangle.width/12, rectangle.height/12, new Vector2(0, - rectangle.width/2), 0);
+            polygonShape.setAsBox(rectangle.width * 0.45f, rectangle.height/12, new Vector2(0, - rectangle.width/2), 0);
             body.createFixture(fDef).setUserData("footEnemy");
             body.getFixtureList().get(body.getFixtureList().size - 1).setSensor(true);
         }
