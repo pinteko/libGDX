@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
@@ -24,17 +25,10 @@ import com.mygdx.game.*;
 import java.util.ArrayList;
 
 public class GameScreen implements Screen {
-    private static final float STEP = 12;
-    Main game;
+    private Main game;
     private SpriteBatch batch;
-    private Anim animation;
-    private final Anim animationStart;
-    private final Anim animationJump;
-    private final Anim animationPunch;
 
     private Enemy enemy;
-    boolean directionHero;
-    boolean directionEnemy;
     private ShapeRenderer shapeRenderer;
     private OrthographicCamera camera;
     private TiledMap map;
@@ -43,42 +37,46 @@ public class GameScreen implements Screen {
     private final int[] bg;
     private final int[] l1;
     public static PhysX physX;
+
+    private Hero hero;
     private final Body bodyHero;
     private final Body bodyBall;
     private final Body bodyEnemy;
     private final Rectangle heroRect;
     private final Rectangle ballRect;
     private final Rectangle enemyRect;
-    public static ArrayList<Body> bodies;
+    public static ArrayList<Body> enemiesToDelete;
+    public static ArrayList<Enemy> enemies;
 
-    private Array<RectangleMapObject> objects;
+    private Array<RectangleMapObject> staticObjects;
     public static  Music musicHero;
     public static  Music musicBall;
     public static  Music musicGameOver;
     public static Music musicPresent;
-    public static boolean contactGround;
     public static boolean stopEnemy;
+    public static boolean jumpInAir;
+    public static boolean rockMove;
+    public static boolean bodyBallActive;
+    public static boolean bodyEnemyActive;
     float x;
     float y;
-
+    private static int life;
+    private BitmapFont font;
     private Rectangle mapSize;
 
     public GameScreen(Main game) {
         this.game = game;
         batch = new SpriteBatch();
-        animation = new Anim("counter", Animation.PlayMode.LOOP);
-        animationStart = new Anim("start", Animation.PlayMode.LOOP);
-        animationJump = new Anim("jump", Animation.PlayMode.LOOP);
-        animationPunch = new Anim("punch", Animation.PlayMode.LOOP);
-        enemy = new Enemy();
+        hero = new Hero();
+
         shapeRenderer = new ShapeRenderer();
         camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         map = new TmxMapLoader().load("map/map2.tmx");
         mapRenderer = new OrthogonalTiledMapRenderer(map);
         initMusic();
-        contactGround = false;
-//        sound = Gdx.audio.newSound((Gdx.files.internal("")));  //написать имя аудио из папки assets
-        bodies = new ArrayList<>();
+
+        enemiesToDelete = new ArrayList<>();
+        enemies = new ArrayList<>();
         rock = new Texture("rock.png");
 
         bg = new int[1];
@@ -96,20 +94,25 @@ public class GameScreen implements Screen {
         rmp = (RectangleMapObject) map.getLayers().get("dynamic_objects").getObjects().get("enemy");
         enemyRect = rmp.getRectangle();
         bodyEnemy = physX.addObject(rmp, 0);
+        enemy = new Enemy("enemy.png", 6, 5, Animation.PlayMode.LOOP, bodyEnemy, enemyRect);
+        enemies.add(enemy);
         rmp = (RectangleMapObject) map.getLayers().get("border").getObjects().get("border");
         mapSize = rmp.getRectangle();
-        objects = map.getLayers().get("static_objects").getObjects().getByType(RectangleMapObject.class);
-//        objects.addAll(map.getLayers().get("kinematic_objects").getObjects().getByType(RectangleMapObject.class));
-//        objects.addAll(map.getLayers().get("dynamic_objects").getObjects().getByType(RectangleMapObject.class));
-        for (int i = 0; i < objects.size; i++) {
-           physX.addObject(objects.get(i), 1);
+        staticObjects = map.getLayers().get("static_objects").getObjects().getByType(RectangleMapObject.class);
+        for (int i = 0; i < staticObjects.size; i++) {
+           physX.addObject(staticObjects.get(i), 1);
 
         }
         x = mapSize.x;
         y = mapSize.y;
-        directionHero = true;
-        directionEnemy = true;
         stopEnemy = false;
+        jumpInAir = false;
+        rockMove = false;
+        bodyBallActive = true;
+        bodyEnemyActive = true;
+        life = 100;
+        font = new BitmapFont();
+        font.setColor(Color.BLACK);
         camera.zoom = 0.5f;
     }
 
@@ -138,93 +141,35 @@ public class GameScreen implements Screen {
 
         float dt = Gdx.graphics.getDeltaTime();
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.A)) {
-            bodyHero.applyForceToCenter(new Vector2(-1000, 0), true);
-            animation = animationStart;
-            directionHero = true;}
-        if (Gdx.input.isKeyJustPressed(Input.Keys.D)) {
-            bodyHero.applyForceToCenter(new Vector2(1000, 0), true);
-            animation = animationStart;
-            directionHero = false;}
-        if (Gdx.input.isKeyJustPressed(Input.Keys.W) && contactGround) {
-            bodyHero.applyForceToCenter(new Vector2(0, 3000), true);
-            animation = animationJump;}
-        if (Gdx.input.isKeyJustPressed(Input.Keys.S)) {
-            bodyHero.applyForceToCenter(new Vector2(0, -3000), true);
-            animation = animationJump;
-        }
-
-        if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
-            animation = animationPunch;
-        }
-
         if (Gdx.input.isKeyJustPressed(Input.Keys.P)) camera.zoom += 0.1f;
         if (Gdx.input.isKeyJustPressed(Input.Keys.O) && camera.zoom > 0) camera.zoom -= 0.1f;
 
-        if (directionHero && animation.getFrame().isFlipX()) {
-            animation.getFrame().flip(true, false);
-        }
-        if (!directionHero && !animation.getFrame().isFlipX()) {
-            animation.getFrame().flip(true, false);}
+        if (rockMove) {
+            bodyBall.setGravityScale(5.0f);
+            bodyBall.applyForceToCenter(new Vector2(0, -10000), true);}
 
         if (musicGameOver.isPlaying()) {
+            life -= 50;
+            musicGameOver.stop();
+            if (life == 0) {
             dispose();
-            game.setScreen(new GameOverScreen(game));
+            game.setScreen(new GameOverScreen(game));}
         }
 
-        if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
-                fire(directionHero);
+        if (musicPresent.isPlaying()) {
+            dispose();
+            game.setScreen(new GameScreenNextLevel(game));
         }
 
-        if (enemyRect.x >= 380) {
-            enemy.getAnimEnemy().getFrame().flip(true, false);
-            directionEnemy = false;
-
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            dispose();
+            game.setScreen(new MenuScreen(game));
         }
-        if (enemyRect.x < 275) {
-            enemy.getAnimEnemy().getFrame().flip(true, false);
-            directionEnemy = true;
-
-        }
-        if (directionEnemy) {
-            bodyEnemy.applyForceToCenter(new Vector2(10, 0), true);
-        } else {
-//            enemyRect.x -= animation.getFrame().getRegionWidth()/100f;
-//            bodyEnemy.getPosition().x -= animation.getFrame().getRegionWidth()/100f;
-            bodyEnemy.applyForceToCenter(new Vector2(-10, 0), true);
-        }
-//        if (stopEnemy) {
-//            bodyEnemy.setActive(false);
-//        }
-
 
         camera.position.x = bodyHero.getPosition().x;
         camera.position.y = bodyHero.getPosition().y;
         camera.update();
-        ScreenUtils.clear(Color.YELLOW);
-        animation.setTime(dt);
-
-
-//        if (x >= Gdx.graphics.getWidth() - animation.getFrame().getRegionWidth()) {
-//            animation.getFrame().flip(true, false);
-//            direction = false;
-//        }
-//
-//        if (x <= 0) {
-//            animation.getFrame().flip(true, false);
-//            direction = true;
-//        }
-//
-//        if (direction) {
-//            x += animation.getFrame().getRegionWidth()/100f;
-//        } else {
-//            x -= animation.getFrame().getRegionWidth()/100f;
-//        }
-
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-                dispose();
-                game.setScreen(new MenuScreen(game));
-        }
+        ScreenUtils.clear(Color.OLIVE);
 
         mapRenderer.setView(camera);
         mapRenderer.render(bg);
@@ -238,67 +183,35 @@ public class GameScreen implements Screen {
         ballRect.y = bodyBall.getPosition().y - ballRect.height/2;
         enemyRect.x = bodyEnemy.getPosition().x - enemyRect.width/2;
         enemyRect.y = bodyEnemy.getPosition().y - enemyRect.height/2;
-        update(dt);
+        update(dt, staticObjects, enemies, physX);
         batch.begin();
-        batch.draw(rock, ballRect.x, ballRect.y, ballRect.width, ballRect.height);
-        batch.draw(animation.getFrame(), heroRect.x, heroRect.y, heroRect.width, heroRect.height);
-        batch.draw(enemy.getAnimEnemy().getFrame(), enemyRect.x, enemyRect.y, enemyRect.width, enemyRect.height);
-        BulletEmitter.getInstance().render(batch, directionHero);
+        font.draw(batch, "Your life:" + life, camera.position.x - camera.viewportWidth / 4.5f,
+                camera.position.y - font.getXHeight() + camera.viewportHeight / 4.5f);
+        if (bodyBallActive) {
+        batch.draw(rock, ballRect.x, ballRect.y, ballRect.width, ballRect.height);}
+        hero.render(batch, bodyHero, heroRect, dt);
+        if (enemy.isBodyEnemyActive() && bodyEnemyActive) {
+            enemy.render(batch, dt);}
+        BulletEmitter.getInstance().render(batch, Hero.isDirectionHero());
         batch.end();
-
-
-
-
-//        shapeRenderer.setProjectionMatrix(camera.combined);
-//        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-//        shapeRenderer.setColor(Color.BLACK);
-//        for (int i = 0; i < objects.size; i++) {
-//            Rectangle mapSize = objects.get(i).getRectangle();
-//            shapeRenderer.rect(mapSize.x, mapSize.y, mapSize.width, mapSize.height);
-//        }
-//        shapeRenderer.rect(mapSize.x, mapSize.y + mapSize.height, backRect.width, backRect.height);
-//        shapeRenderer.end();
-
-
 
         mapRenderer.render(l1);
         physX.step();
         physX.debugDraw(camera);
 
-//        for (int i = 0; i < bodies.size(); i++)
-//         {
-////             bodies.get(i).setType(BodyDef.BodyType.DynamicBody);
-////             bodies.get(i).setGravityScale(0.0f);
-////            physX.deleteBody(bodies.get(i)); // к примеру
-//
-//        }
-        if (bodies.size() > 0) {
-            bodyBall.setGravityScale(5.0f);
-            bodyBall.applyForceToCenter(new Vector2(0, -10000), true);
-        }
-        bodies.clear();
-    }
-
-    public void fire(boolean direction) {
-        for (Bullet o : BulletEmitter.getInstance().bullets) {
-            if (!o.active) {
-                    o.setup(heroRect.x, heroRect.y + heroRect.height/2, heroRect.x + 400, heroRect.y, direction);
-                break;
+        if (enemiesToDelete.size() > 0) {
+            for (int i = 0; i < enemiesToDelete.size(); i++) {
+                physX.deleteBody(enemiesToDelete.get(i)); // к примеру
             }
         }
+        enemiesToDelete.clear();
+
+
+
     }
 
-    public void update(float dt) {
-        BulletEmitter.getInstance().update(dt * 4);
-        for (Bullet b : BulletEmitter.getInstance().bullets) {
-            if (b.active) {
-                for (RectangleMapObject o: objects) {
-                    if (o.getRectangle().contains(b.position.x, b.position.y)) {
-                        b.destroy();
-                    }
-                }
-            }
-        }
+    public void update(float dt, Array<RectangleMapObject> staticObjects, ArrayList<Enemy> enemies, PhysX physX) {
+        hero.update(dt, staticObjects, enemies, physX);
     }
 
     @Override
@@ -324,12 +237,20 @@ public class GameScreen implements Screen {
 
     @Override
     public void dispose() {
-        batch.dispose();
-        animation.dispose();
-        shapeRenderer.dispose();
+        this.game.dispose();
+        this.batch.dispose();
+        this.enemy.dispose();
+        this.hero.dispose();
+        this.shapeRenderer.dispose();
+        this.map.dispose();
+        this.mapRenderer.dispose();
+        this.rock.dispose();
+        this.font.dispose();
+        physX.dispose();
         musicHero.dispose();
         musicGameOver.dispose();
         musicBall.dispose();
-//        sound.dispose();
+        musicPresent.dispose();
+
     }
 }

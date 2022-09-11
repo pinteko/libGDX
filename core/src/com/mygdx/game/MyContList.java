@@ -13,12 +13,12 @@ public class MyContList implements ContactListener {
             String tmpA = (String) a.getUserData();
             String tmpB = (String) b.getUserData();
             if (tmpA.equals("hero") && tmpB.equals("qube")) {
-                GameScreen.bodies.add(b.getBody());
+                GameScreen.rockMove = true;
 //                a.getBody().applyForceToCenter(new Vector2(100000, 0), true);
 //                b.getBody().setActive(false);
             }
             if (tmpA.equals("qube") && tmpB.equals("hero")) {
-                GameScreen.bodies.add(a.getBody());
+                GameScreen.rockMove = true;
 //                b.getBody().applyForceToCenter(new Vector2(100000, 0), true);
 //                a.getBody().setActive(false);
 
@@ -39,10 +39,23 @@ public class MyContList implements ContactListener {
             }
             if (tmpA.equals("hero") && tmpB.equals("ball")) {
                 GameScreen.musicGameOver.play();
+                GameScreen.enemiesToDelete.add(b.getBody());
+                GameScreen.bodyBallActive = false;
             }
             if (tmpA.equals("ball") && tmpB.equals("hero")) {
                 GameScreen.musicGameOver.play();
-
+                GameScreen.enemiesToDelete.add(a.getBody());
+                GameScreen.bodyBallActive = false;
+            }
+            if (tmpA.equals("hero") && tmpB.equals("enemy")) {
+                GameScreen.musicGameOver.play();
+                GameScreen.enemiesToDelete.add(b.getBody());
+                GameScreen.bodyEnemyActive = false;
+            }
+            if (tmpA.equals("enemy") && tmpB.equals("hero")) {
+                GameScreen.musicGameOver.play();
+                GameScreen.enemiesToDelete.add(a.getBody());
+                GameScreen.bodyEnemyActive = false;
             }
             if (tmpA.equals("hero") && tmpB.equals("present")) {
                 GameScreen.musicPresent.play();
@@ -58,10 +71,12 @@ public class MyContList implements ContactListener {
                 a.getBody().setGravityScale(0f);
             }
             if (tmpA.equals("sensor") && (tmpB.equals("state") || tmpB.equals("qube"))) {
-                GameScreen.contactGround = true;
+                Hero.setContactGround(true);
+                Hero.setJumpInAir(false);
             }
             if ((tmpA.equals("state") || tmpA.equals("qube")) && tmpB.equals("sensor")) {
-                GameScreen.contactGround = true;
+                Hero.setContactGround(true);
+                Hero.setJumpInAir(false);
             }
             if (tmpA.equals("footEnemy") && (tmpB.equals("stop"))) {
                 GameScreen.stopEnemy = true;
@@ -82,16 +97,18 @@ public class MyContList implements ContactListener {
             String tmpA = (String) a.getUserData();
             String tmpB = (String) b.getUserData();
             if (tmpA.equals("sensor") && (tmpB.equals("state") || tmpB.equals("qube"))) {
-                GameScreen.contactGround = false;
+                Hero.setContactGround(false);
             }
             if ((tmpA.equals("state") || tmpA.equals("qube")) && tmpB.equals("sensor")) {
-                GameScreen.contactGround = false;
+                Hero.setContactGround(false);
             }
             if (tmpA.equals("hero") && tmpB.equals("liana")) {
-                a.getBody().setGravityScale(4.0f);
+                a.getBody().setGravityScale(3.5f);
+                Hero.setJumpInAir(false);
             }
             if (tmpA.equals("liana") && tmpB.equals("hero")) {
-                a.getBody().setGravityScale(4.0f);
+                a.getBody().setGravityScale(3.5f);
+                Hero.setJumpInAir(false);
             }
         }
     }

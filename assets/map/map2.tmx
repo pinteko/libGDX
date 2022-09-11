@@ -22,49 +22,49 @@
    <property name="gravityScale" type="float" value="1"/>
    <property name="restitution" type="float" value="0"/>
   </properties>
-  <object id="1" name="wall_l" x="-0.5" y="2" width="16.5" height="270.5">
+  <object id="1" name="wall_l" x="-0.25" y="0.25" width="16.5" height="271">
    <properties>
     <property name="BodyType" value="StaticBody"/>
     <property name="gravityScale" type="float" value="1"/>
     <property name="restitution" type="float" value="0"/>
    </properties>
   </object>
-  <object id="2" name="wall_r" x="448" y="2" width="15.5" height="271">
+  <object id="2" name="wall_r" x="447.75" y="0.5" width="15.5" height="271">
    <properties>
     <property name="BodyType" value="StaticBody"/>
     <property name="gravityScale" type="float" value="1"/>
     <property name="restitution" type="float" value="0"/>
    </properties>
   </object>
-  <object id="4" name="state" x="18" y="258" width="431" height="15">
+  <object id="4" name="state" x="16.75" y="256.25" width="431" height="15">
    <properties>
     <property name="BodyType" value="StaticBody"/>
     <property name="gravityScale" type="float" value="1"/>
     <property name="restitution" type="float" value="0"/>
    </properties>
   </object>
-  <object id="5" name="state" x="48" y="241.5" width="32" height="16.5">
+  <object id="5" name="state" x="48.5" y="240.25" width="32" height="16.5">
    <properties>
     <property name="BodyType" value="StaticBody"/>
     <property name="gravityScale" type="float" value="1"/>
     <property name="restitution" type="float" value="0"/>
    </properties>
   </object>
-  <object id="6" name="state" x="65" y="225" width="32" height="16">
+  <object id="6" name="state" x="64.5" y="224.25" width="32" height="16">
    <properties>
     <property name="BodyType" value="StaticBody"/>
     <property name="gravityScale" type="float" value="1"/>
     <property name="restitution" type="float" value="0"/>
    </properties>
   </object>
-  <object id="7" name="state" x="97" y="193" width="32" height="16">
+  <object id="7" name="state" x="96" y="191.75" width="32" height="16">
    <properties>
     <property name="BodyType" value="StaticBody"/>
     <property name="gravityScale" type="float" value="1"/>
     <property name="restitution" type="float" value="0"/>
    </properties>
   </object>
-  <object id="8" name="state" x="161" y="161" width="32" height="16">
+  <object id="8" name="state" x="160.25" y="160" width="32" height="16">
    <properties>
     <property name="BodyType" value="StaticBody"/>
     <property name="gravityScale" type="float" value="1"/>
@@ -78,14 +78,14 @@
     <property name="restitution" type="float" value="0"/>
    </properties>
   </object>
-  <object id="10" name="qube" x="240.5" y="209.5" width="14.5" height="15.5">
+  <object id="10" name="qube" x="240" y="208.25" width="15.25" height="16.5">
    <properties>
     <property name="BodyType" value="StaticBody"/>
     <property name="gravityScale" type="float" value="1"/>
     <property name="restitution" type="float" value="0"/>
    </properties>
   </object>
-  <object id="11" name="qube" x="240" y="226" width="31" height="30.5">
+  <object id="11" name="qube" x="240" y="224.75" width="31" height="31.75">
    <properties>
     <property name="BodyType" value="StaticBody"/>
     <property name="gravityScale" type="float" value="1"/>
@@ -99,21 +99,21 @@
     <property name="restitution" type="float" value="0"/>
    </properties>
   </object>
-  <object id="16" name="state" x="192" y="65.5" width="207.5" height="15">
+  <object id="16" name="state" x="192" y="64.25" width="207.5" height="15">
    <properties>
     <property name="BodyType" value="StaticBody"/>
     <property name="gravityScale" type="float" value="1"/>
     <property name="restitution" type="float" value="0"/>
    </properties>
   </object>
-  <object id="17" name="present" x="256" y="49.5" width="15" height="15">
+  <object id="17" name="present" x="256.75" y="48.75" width="15" height="15">
    <properties>
     <property name="BodyType" value="StaticBody"/>
     <property name="gravityScale" type="float" value="1"/>
     <property name="restitution" type="float" value="0"/>
    </properties>
   </object>
-  <object id="18" name="up" x="17" y="2" width="430" height="16">
+  <object id="18" name="up" x="16.75" y="0.25" width="431.25" height="16">
    <properties>
     <property name="BodyType" value="StaticBody"/>
     <property name="gravityScale" type="float" value="1"/>

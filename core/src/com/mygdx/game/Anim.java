@@ -29,7 +29,7 @@ public class Anim {
                  region1[cnt++] = regions0[i][j];
              }
          }
-         anm = new Animation<TextureRegion>(1/15f, region1);
+         anm = new Animation<>(1/15f, region1);
 
          setMode(playMode);
 
@@ -38,9 +38,8 @@ public class Anim {
 
      public Anim(String region, Animation.PlayMode playMode) {
          atlas = new TextureAtlas("atlas/fighter/fighter.atlas");
-         anm = new Animation<TextureRegion>(1/10f, atlas.findRegions(region));
+         anm = new Animation<TextureRegion>(1/05f, atlas.findRegions(region));
          setMode(playMode);
-
          time += Gdx.graphics.getDeltaTime();
      }
 
@@ -63,5 +62,8 @@ public class Anim {
          return region1;
     }
 
-    public void dispose() {}
+    public void dispose() {
+         if (this.img != null) {this.img.dispose();}
+         if (this.atlas != null) {this.atlas.dispose();}
+    }
 }
