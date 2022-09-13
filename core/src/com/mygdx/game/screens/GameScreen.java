@@ -37,7 +37,6 @@ public class GameScreen implements Screen {
     private final int[] bg;
     private final int[] l1;
     public static PhysX physX;
-
     private Hero hero;
     private final Body bodyHero;
     private final Body bodyBall;
@@ -46,7 +45,7 @@ public class GameScreen implements Screen {
     private final Rectangle ballRect;
     private final Rectangle enemyRect;
     public static ArrayList<Body> enemiesToDelete;
-    public static ArrayList<Enemy> enemies;
+    private static ArrayList<Enemy> enemies;
 
     private Array<RectangleMapObject> staticObjects;
     public static  Music musicHero;
@@ -158,7 +157,7 @@ public class GameScreen implements Screen {
 
         if (musicPresent.isPlaying()) {
             dispose();
-            game.setScreen(new GameScreenNextLevel(game));
+            game.setScreen(new WinScreen(game));
         }
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
@@ -251,6 +250,5 @@ public class GameScreen implements Screen {
         musicGameOver.dispose();
         musicBall.dispose();
         musicPresent.dispose();
-
     }
 }
