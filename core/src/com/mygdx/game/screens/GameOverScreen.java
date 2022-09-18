@@ -72,7 +72,7 @@ public class GameOverScreen implements Screen {
             int y = Gdx.graphics.getHeight() - Gdx.input.getY();
             if (againRect.contains(x, y)) {
                 dispose();
-                game.setScreen(new GameScreen(game));
+                game.setScreen(new GameScreen(game, "map/map2.tmx"));
             }
             if (exitRect.contains(x, y)) {
                 dispose();

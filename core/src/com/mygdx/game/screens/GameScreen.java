@@ -31,7 +31,6 @@ public class GameScreen implements Screen {
     private Enemy enemy;
     private ShapeRenderer shapeRenderer;
     private OrthographicCamera camera;
-    private TiledMap map;
     private OrthogonalTiledMapRenderer mapRenderer;
     private Texture rock;
     private final int[] bg;
@@ -45,9 +44,11 @@ public class GameScreen implements Screen {
     private final Rectangle ballRect;
     private final Rectangle enemyRect;
     public static ArrayList<Body> enemiesToDelete;
+    public static ArrayList<Body> enemiesToReverse;
     private static ArrayList<Enemy> enemies;
 
     private Array<RectangleMapObject> staticObjects;
+    private Array<RectangleMapObject> sensors;
     public static  Music musicHero;
     public static  Music musicBall;
     public static  Music musicGameOver;
@@ -63,18 +64,20 @@ public class GameScreen implements Screen {
     private BitmapFont font;
     private Rectangle mapSize;
 
-    public GameScreen(Main game) {
+    public GameScreen(Main game, String mapName) {
         this.game = game;
         batch = new SpriteBatch();
-        hero = new Hero();
+        physX = new PhysX();
+        hero = new Hero(physX);
 
         shapeRenderer = new ShapeRenderer();
         camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        map = new TmxMapLoader().load("map/map2.tmx");
+        TiledMap map = new TmxMapLoader().load(mapName); //!!!!!
         mapRenderer = new OrthogonalTiledMapRenderer(map);
         initMusic();
 
         enemiesToDelete = new ArrayList<>();
+        enemiesToReverse = new ArrayList<>();
         enemies = new ArrayList<>();
         rock = new Texture("rock.png");
 
@@ -82,7 +85,7 @@ public class GameScreen implements Screen {
         bg[0] = map.getLayers().getIndex("main");
         l1 = new int[1];
         l1[0] = map.getLayers().getIndex("grass");
-        physX = new PhysX();
+
 
         RectangleMapObject rmp = (RectangleMapObject) map.getLayers().get("dynamic_objects").getObjects().get("hero");
         heroRect = rmp.getRectangle();
@@ -100,7 +103,10 @@ public class GameScreen implements Screen {
         staticObjects = map.getLayers().get("static_objects").getObjects().getByType(RectangleMapObject.class);
         for (int i = 0; i < staticObjects.size; i++) {
            physX.addObject(staticObjects.get(i), 1);
-
+        }
+        sensors = map.getLayers().get("sensors").getObjects().getByType(RectangleMapObject.class);
+        for (int i = 0; i < sensors.size; i++) {
+            physX.addObject(sensors.get(i), 1);
         }
         x = mapSize.x;
         y = mapSize.y;
@@ -147,24 +153,6 @@ public class GameScreen implements Screen {
             bodyBall.setGravityScale(5.0f);
             bodyBall.applyForceToCenter(new Vector2(0, -10000), true);}
 
-        if (musicGameOver.isPlaying()) {
-            life -= 50;
-            musicGameOver.stop();
-            if (life == 0) {
-            dispose();
-            game.setScreen(new GameOverScreen(game));}
-        }
-
-        if (musicPresent.isPlaying()) {
-            dispose();
-            game.setScreen(new WinScreen(game));
-        }
-
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-            dispose();
-            game.setScreen(new MenuScreen(game));
-        }
-
         camera.position.x = bodyHero.getPosition().x;
         camera.position.y = bodyHero.getPosition().y;
         camera.update();
@@ -174,7 +162,7 @@ public class GameScreen implements Screen {
         mapRenderer.render(bg);
 
         Vector2 path = bodyHero.getLinearVelocity(); //направление героя
-        System.out.println(path);
+//        System.out.println(path);
         batch.setProjectionMatrix(camera.combined);
         heroRect.x = bodyHero.getPosition().x - heroRect.width/2;
         heroRect.y = bodyHero.getPosition().y - heroRect.height/2;
@@ -182,7 +170,7 @@ public class GameScreen implements Screen {
         ballRect.y = bodyBall.getPosition().y - ballRect.height/2;
         enemyRect.x = bodyEnemy.getPosition().x - enemyRect.width/2;
         enemyRect.y = bodyEnemy.getPosition().y - enemyRect.height/2;
-        update(dt, staticObjects, enemies, physX);
+        update(dt, staticObjects, enemies);
         batch.begin();
         font.draw(batch, "Your life:" + life, camera.position.x - camera.viewportWidth / 4.5f,
                 camera.position.y - font.getXHeight() + camera.viewportHeight / 4.5f);
@@ -205,12 +193,38 @@ public class GameScreen implements Screen {
         }
         enemiesToDelete.clear();
 
+        if (enemiesToReverse.size() > 0) {
+            enemy.setContactEnemySensor(true);
 
+        }
+        enemiesToReverse.clear();
 
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            dispose();
+            game.setScreen(new MenuScreen(game));
+        }
+
+        if (musicGameOver.isPlaying()) {
+            life -= 50;
+            musicGameOver.stop();
+            if (life == 0) {
+                dispose();
+                game.setScreen(new GameOverScreen(game));}
+        }
+
+        if (musicPresent.isPlaying()) {
+            musicPresent.stop();
+            dispose();
+            game.setScreen(new WinScreen(game));
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.Y)) {
+            dispose();
+            game.setScreen(new WinScreen(game));
+        }
     }
 
-    public void update(float dt, Array<RectangleMapObject> staticObjects, ArrayList<Enemy> enemies, PhysX physX) {
-        hero.update(dt, staticObjects, enemies, physX);
+    public void update(float dt, Array<RectangleMapObject> staticObjects, ArrayList<Enemy> enemies) {
+        hero.update(dt, staticObjects, enemies);
     }
 
     @Override
@@ -236,12 +250,10 @@ public class GameScreen implements Screen {
 
     @Override
     public void dispose() {
-        this.game.dispose();
         this.batch.dispose();
         this.enemy.dispose();
         this.hero.dispose();
         this.shapeRenderer.dispose();
-        this.map.dispose();
         this.mapRenderer.dispose();
         this.rock.dispose();
         this.font.dispose();

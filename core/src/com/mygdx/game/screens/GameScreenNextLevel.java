@@ -27,10 +27,8 @@ import java.util.ArrayList;
 public class GameScreenNextLevel implements Screen {
     private Main game;
     private SpriteBatch batch;
-    private Enemy enemy;
     private ShapeRenderer shapeRenderer;
     private OrthographicCamera camera;
-    private TiledMap map;
     private OrthogonalTiledMapRenderer mapRenderer;
     public static PhysX physX;
     private Hero hero;
@@ -39,15 +37,16 @@ public class GameScreenNextLevel implements Screen {
     private final Rectangle heroRect;
 //    private final Rectangle enemyRect;
     public static ArrayList<Body> enemiesToDelete;
+    public static ArrayList<Body> enemiesToReverse;
     public static ArrayList<Enemy> enemies;
     private Array<RectangleMapObject> staticObjects;
+    private Array<RectangleMapObject> sensors;
     private Array<RectangleMapObject> enemiesObjects;
     public static Music musicHero;
     public static  Music musicGameOver;
     public static Music musicPresent;
     public static boolean stopEnemy;
     public static boolean jumpInAir;
-    public static boolean bodyEnemyActive;
     float x;
     float y;
     private final int[] bg;
@@ -57,49 +56,51 @@ public class GameScreenNextLevel implements Screen {
     private Rectangle mapSize;
 
 
-    public GameScreenNextLevel(Main game) {
+    public GameScreenNextLevel(Main game, String mapName) {
         this.game = game;
-        this.hero = new Hero();
+        physX = new PhysX();
+        this.hero = new Hero(physX);
         batch = new SpriteBatch();
         shapeRenderer = new ShapeRenderer();
         camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        map = new TmxMapLoader().load("map/map3.tmx");
+        TiledMap map = new TmxMapLoader().load(mapName); //!!!!!
         mapRenderer = new OrthogonalTiledMapRenderer(map);
         initMusic();
-        physX = new PhysX();
+
         enemiesToDelete = new ArrayList<>();
+        enemiesToReverse = new ArrayList<>();
         enemies = new ArrayList<>();
 
         bg = new int[1];
         bg[0] = map.getLayers().getIndex("main");
-        l1 = new int[1];
-        l1[0] = map.getLayers().getIndex("dop");
+        l1 = new int[2];
+        l1[0] = map.getLayers().getIndex("bg1");
+        l1[1] = map.getLayers().getIndex("bg1");
 
         RectangleMapObject rmp = (RectangleMapObject) map.getLayers().get("dynamic_objects").getObjects().get("hero");
         heroRect = rmp.getRectangle();
         bodyHero = physX.addObject(rmp, 0);
-        enemiesObjects = map.getLayers().get("enemies").getObjects().getByType(RectangleMapObject.class);
-        for (int i = 0; i < enemiesObjects.size; i++) {
-            enemy = new Enemy("enemy.png", 6, 5, Animation.PlayMode.LOOP,
-                    physX.addObject(enemiesObjects.get(i), 1), enemiesObjects.get(i).getRectangle());
-            enemies.add(enemy);
-        }
-//        rmp = (RectangleMapObject) map.getLayers().get("dynamic_objects").getObjects().get("enemy");
-//        enemyRect = rmp.getRectangle();
-//        bodyEnemy = physX.addObject(rmp, 0);
-//        enemy = new Enemy("enemy.png", 6, 5, Animation.PlayMode.LOOP, bodyEnemy, enemyRect);
-//        enemies.add(enemy); //сделать лист с врагами
         rmp = (RectangleMapObject) map.getLayers().get("border").getObjects().get("border");
         mapSize = rmp.getRectangle();
+        enemiesObjects = map.getLayers().get("enemies").getObjects().getByType(RectangleMapObject.class);
+        for (int i = 0; i < enemiesObjects.size; i++) {
+            Rectangle enemyRect = enemiesObjects.get(i).getRectangle();
+            Body bodyEnemy = physX.addObject(enemiesObjects.get(i), 1);
+           Enemy enemy = new Enemy("enemy.png", 6, 5, Animation.PlayMode.LOOP, bodyEnemy, enemyRect);
+            enemies.add(enemy);
+        }
         staticObjects = map.getLayers().get("static_objects").getObjects().getByType(RectangleMapObject.class);
         for (int i = 0; i < staticObjects.size; i++) {
             physX.addObject(staticObjects.get(i), 1);
+        }
+        sensors = map.getLayers().get("sensors").getObjects().getByType(RectangleMapObject.class);
+        for (int i = 0; i < sensors.size; i++) {
+            physX.addObject(sensors.get(i), 1);
         }
         x = mapSize.x;
         y = mapSize.y;
         stopEnemy = false;
         jumpInAir = false;
-        bodyEnemyActive = true;
         life = 100;
         font = new BitmapFont();
         font.setColor(Color.BLACK);
@@ -118,6 +119,51 @@ public class GameScreenNextLevel implements Screen {
         if (Gdx.input.isKeyJustPressed(Input.Keys.P)) camera.zoom += 0.1f;
         if (Gdx.input.isKeyJustPressed(Input.Keys.O) && camera.zoom > 0) camera.zoom -= 0.1f;
 
+        camera.position.x = bodyHero.getPosition().x;
+        camera.position.y = bodyHero.getPosition().y;
+        camera.update();
+        ScreenUtils.clear(Color.OLIVE);
+        mapRenderer.render(l1);
+        mapRenderer.setView(camera);
+        mapRenderer.render(bg);
+
+        Vector2 path = bodyHero.getLinearVelocity(); //направление героя
+//        System.out.println(path);
+        batch.setProjectionMatrix(camera.combined);
+        heroRect.x = bodyHero.getPosition().x - heroRect.width/2;
+        heroRect.y = bodyHero.getPosition().y - heroRect.height/2;
+        update(dt, staticObjects, enemies);
+        batch.begin();
+        font.draw(batch, "Your life:" + life, camera.position.x - camera.viewportWidth / 4.5f,
+                camera.position.y - font.getXHeight() + camera.viewportHeight / 4.5f);
+        hero.render(batch, bodyHero, heroRect, dt);
+        for (int i = 0; i < enemiesObjects.size; i++) {
+            if (enemies.get(i).isBodyEnemyActive()) {
+                enemies.get(i).render(batch, dt);}
+        }
+        BulletEmitter.getInstance().render(batch, Hero.isDirectionHero());
+        batch.end();
+
+
+        physX.step();
+        physX.debugDraw(camera);
+
+        if (enemiesToDelete.size() > 0) {
+            for (int i = 0; i < enemiesToDelete.size(); i++) {
+                physX.deleteBody(enemiesToDelete.get(i)); // к примеру
+            }
+        }
+        enemiesToDelete.clear();
+
+        if (enemiesToReverse.size() > 0) {
+            for (Enemy enemy : enemies) {
+                for (Body body : enemiesToReverse) {
+                    if (enemy.getBodyEnemy().equals(body)) {
+                        enemy.setContactEnemySensor(true);
+                    }
+                }
+            }
+        }
 
         if (musicGameOver.isPlaying()) {
             life -= 50;
@@ -129,7 +175,7 @@ public class GameScreenNextLevel implements Screen {
 
         if (musicPresent.isPlaying()) {
             dispose();
-            game.setScreen(new GameScreenNextLevel(game));
+            game.setScreen(new WinScreen(game));
         }
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
@@ -137,46 +183,11 @@ public class GameScreenNextLevel implements Screen {
             game.setScreen(new MenuScreen(game));
         }
 
-        camera.position.x = bodyHero.getPosition().x;
-        camera.position.y = bodyHero.getPosition().y;
-        camera.update();
-        ScreenUtils.clear(Color.OLIVE);
-
-        mapRenderer.setView(camera);
-        mapRenderer.render(bg);
-
-        Vector2 path = bodyHero.getLinearVelocity(); //направление героя
-        System.out.println(path);
-        batch.setProjectionMatrix(camera.combined);
-        heroRect.x = bodyHero.getPosition().x - heroRect.width/2;
-        heroRect.y = bodyHero.getPosition().y - heroRect.height/2;
-        update(dt, staticObjects, enemies, physX);
-        batch.begin();
-        font.draw(batch, "Your life:" + life, camera.position.x - camera.viewportWidth / 4.5f,
-                camera.position.y - font.getXHeight() + camera.viewportHeight / 4.5f);
-        hero.render(batch, bodyHero, heroRect, dt);
-        if (enemy.isBodyEnemyActive() && bodyEnemyActive) {
-            enemy.render(batch, dt);}
-        BulletEmitter.getInstance().render(batch, Hero.isDirectionHero());
-        batch.end();
-
-        mapRenderer.render(l1);
-        physX.step();
-        physX.debugDraw(camera);
-
-        if (enemiesToDelete.size() > 0) {
-            for (int i = 0; i < enemiesToDelete.size(); i++) {
-                physX.deleteBody(enemiesToDelete.get(i)); // к примеру
-            }
-        }
-        enemiesToDelete.clear();
-
-
 
     }
 
-    public void update(float dt, Array<RectangleMapObject> staticObjects, ArrayList<Enemy> enemies, PhysX physX) {
-        hero.update(dt, staticObjects, enemies, physX);
+    public void update(float dt, Array<RectangleMapObject> staticObjects, ArrayList<Enemy> enemies) {
+        hero.update(dt, staticObjects, enemies);
     }
 
     @Override
@@ -216,10 +227,8 @@ public class GameScreenNextLevel implements Screen {
     public void dispose() {
         this.game.dispose();
         this.batch.dispose();
-        this.enemy.dispose();
         this.hero.dispose();
         this.shapeRenderer.dispose();
-        this.map.dispose();
         this.mapRenderer.dispose();
         this.font.dispose();
         physX.dispose();

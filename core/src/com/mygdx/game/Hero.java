@@ -20,9 +20,10 @@ public class Hero {
     private static boolean contactGround;
     private static boolean directionHero;
     private static boolean jumpInAir;
+    private static PhysX physX;
 
 
-    public Hero() {
+    public Hero(PhysX physics) {
         animHero = new Anim("counter", Animation.PlayMode.LOOP);
         animHeroStart = new Anim("start", Animation.PlayMode.LOOP);
         animHeroJump = new Anim("jump", Animation.PlayMode.LOOP);
@@ -30,6 +31,7 @@ public class Hero {
         directionHero = true;
         contactGround = false;
         jumpInAir = false;
+        physX = physics;
     }
 
     public void render(SpriteBatch batch, Body bodyHero, Rectangle heroRect, float dt) {
@@ -87,7 +89,7 @@ public class Hero {
         }
     }
 
-    public void update(float dt, Array<RectangleMapObject> staticObjects, ArrayList<Enemy> enemies, PhysX physX) {
+    public void update(float dt, Array<RectangleMapObject> staticObjects, ArrayList<Enemy> enemies) {
         BulletEmitter.getInstance().update(dt * 4);
         for (Bullet b : BulletEmitter.getInstance().bullets) {
             if (b.active) {
