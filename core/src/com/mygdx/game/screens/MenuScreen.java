@@ -70,7 +70,7 @@ public class MenuScreen implements Screen {
             int y = Gdx.graphics.getHeight() - Gdx.input.getY();
             if (startRect.contains(x, y)) {
             dispose();
-            game.setScreen(new GameScreen(game)); }
+            game.setScreen(new GameScreen(game, "map/map2.tmx")); }
         }
 //        else {
 ////            sound.play(0.5f, 1, 0);  //pitch замедление (0.5f) к примеру

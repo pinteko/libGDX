@@ -33,14 +33,12 @@ public class Anim {
 
          setMode(playMode);
 
-         time += Gdx.graphics.getDeltaTime();
      }
 
      public Anim(String region, Animation.PlayMode playMode) {
          atlas = new TextureAtlas("atlas/fighter/fighter.atlas");
-         anm = new Animation<TextureRegion>(1/05f, atlas.findRegions(region));
+         anm = new Animation<TextureRegion>(1/06f, atlas.findRegions(region));
          setMode(playMode);
-         time += Gdx.graphics.getDeltaTime();
      }
 
      public TextureRegion getFrame() {

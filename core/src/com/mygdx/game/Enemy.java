@@ -2,14 +2,19 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.utils.Array;
 
 public class Enemy {
 
     private final Anim animEnemy;
     private boolean directionEnemy;
+    private boolean startEnemy;
     private boolean bodyEnemyActive;
+    private boolean contactEnemySensor;
     private Rectangle enemyRect;
     private Body bodyEnemy;
 
@@ -19,28 +24,39 @@ public class Enemy {
         bodyEnemyActive = true;
         this.enemyRect = enemyRect;
         this.bodyEnemy = bodyEnemy;
+        this.contactEnemySensor = false;
+        startEnemy = true;
     }
 
     public void render(SpriteBatch batch, float dt) {
-        if (enemyRect.x >= 380) {
-            animEnemy.getFrame().flip(true, false);
-            bodyEnemy.setLinearVelocity(0,0);
-            directionEnemy = false;
+        if (contactEnemySensor) {
+                startEnemy = false;
+                directionEnemy = !directionEnemy;
+                contactEnemySensor = false;
         }
-        if (enemyRect.x < 275) {
+        if (!directionEnemy && !animEnemy.getFrame().isFlipX()) {
             animEnemy.getFrame().flip(true, false);
-            bodyEnemy.setLinearVelocity(0,0);
-            directionEnemy = true;
         }
-        if (directionEnemy) {
+        if (directionEnemy && animEnemy.getFrame().isFlipX()) {
+            animEnemy.getFrame().flip(true, false);
+        }
+        if (startEnemy) {
             bodyEnemy.setLinearVelocity(30,0);
-        } else {
-            bodyEnemy.setLinearVelocity(-30,0);
+            bodyEnemy.applyForceToCenter(new Vector2(0, -1000), true);
         }
-
+        enemyRect.x = bodyEnemy.getPosition().x - enemyRect.width/2;
+        enemyRect.y = bodyEnemy.getPosition().y - enemyRect.height/2;
         animEnemy.setTime(dt);
-
+//        System.out.println(bodyEnemy.getLinearVelocity());
         batch.draw(animEnemy.getFrame(), enemyRect.x, enemyRect.y, enemyRect.width, enemyRect.height);
+    }
+
+    public boolean isContactEnemySensor() {
+        return contactEnemySensor;
+    }
+
+    public void setContactEnemySensor(boolean contactEnemySensor) {
+        this.contactEnemySensor = contactEnemySensor;
     }
 
     public boolean isBodyEnemyActive() {

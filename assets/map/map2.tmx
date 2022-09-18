@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.9" tiledversion="1.9.1" orientation="orthogonal" renderorder="right-down" width="40" height="27" tilewidth="16" tileheight="16" infinite="0" nextlayerid="9" nextobjectid="44">
+<map version="1.9" tiledversion="1.9.1" orientation="orthogonal" renderorder="right-down" width="40" height="27" tilewidth="16" tileheight="16" infinite="0" nextlayerid="10" nextobjectid="46">
  <tileset firstgid="1" name="tile3" tilewidth="16" tileheight="16" spacing="1" margin="1" tilecount="56" columns="7">
   <image source="tile3.png" width="135" height="136"/>
  </tileset>
@@ -163,8 +163,24 @@
    </properties>
   </object>
  </objectgroup>
- <objectgroup id="6" name="border">
-  <object id="27" name="border" x="0" y="0" width="464" height="272">
+ <objectgroup id="9" name="sensors">
+  <object id="44" name="sensorR" x="393.375" y="65" width="5.5" height="5.25">
+   <properties>
+    <property name="BodyType" value="StaticBody"/>
+    <property name="gravityScale" type="float" value="1"/>
+    <property name="restitution" type="float" value="0"/>
+   </properties>
+  </object>
+  <object id="45" name="sensorL" x="272.875" y="65" width="5.5" height="5.25">
+   <properties>
+    <property name="BodyType" value="StaticBody"/>
+    <property name="gravityScale" type="float" value="1"/>
+    <property name="restitution" type="float" value="0"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup id="6" name="border" visible="0">
+  <object id="27" name="border" x="1.75" y="-0.5" width="464" height="272">
    <properties>
     <property name="BodyType" value="StaticBody"/>
     <property name="gravityScale" type="float" value="1"/>
@@ -190,7 +206,7 @@
     <property name="restitution" type="float" value="0"/>
    </properties>
   </object>
-  <object id="38" name="enemy" x="349.038" y="43.1402" width="22" height="20.1818">
+  <object id="38" name="enemy" x="297.371" y="42.8069" width="22" height="20.1818">
    <properties>
     <property name="BodyType" value="DynamicBody"/>
     <property name="gravityScale" type="float" value="3.5"/>

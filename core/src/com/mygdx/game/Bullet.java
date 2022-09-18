@@ -28,7 +28,7 @@ public class Bullet {
     public void update(float dt) {
         if (!this.direction) {position.x += position.x * dt;}
         else {position.x -= position.x * dt;}
-        if (position.x < 30 || position.x > 500) {
+        if (position.x < 20 || position.x > 620) {
             destroy();
         }
     }

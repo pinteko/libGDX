@@ -69,7 +69,7 @@ public class WinScreen implements Screen {
             int y = Gdx.graphics.getHeight() - Gdx.input.getY();
             if (goNextRect.contains(x, y)) {
                 dispose();
-                game.setScreen(new GameScreenNextLevel(game));
+                game.setScreen(new GameScreenNextLevel(game, "map/map3.tmx"));
             }
             if (exitRect.contains(x, y)) {
                 dispose();

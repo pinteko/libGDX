@@ -49,13 +49,9 @@ public class MyContList implements ContactListener {
             }
             if (tmpA.equals("hero") && tmpB.equals("enemy")) {
                 GameScreen.musicGameOver.play();
-                GameScreen.enemiesToDelete.add(b.getBody());
-                GameScreen.bodyEnemyActive = false;
             }
             if (tmpA.equals("enemy") && tmpB.equals("hero")) {
                 GameScreen.musicGameOver.play();
-                GameScreen.enemiesToDelete.add(a.getBody());
-                GameScreen.bodyEnemyActive = false;
             }
             if (tmpA.equals("hero") && tmpB.equals("present")) {
                 GameScreen.musicPresent.play();
@@ -78,11 +74,25 @@ public class MyContList implements ContactListener {
                 Hero.setContactGround(true);
                 Hero.setJumpInAir(false);
             }
-            if (tmpA.equals("footEnemy") && (tmpB.equals("stop"))) {
-                GameScreen.stopEnemy = true;
+            if (tmpA.equals("footEnemy") && (tmpB.equals("sensorL"))) {
+                    GameScreen.enemiesToReverse.add(a.getBody());
+                    a.getBody().setLinearVelocity(30, 0);
+                System.out.println("Touch L");
             }
-            if ((tmpA.equals("stop") || tmpA.equals("footEnemy"))) {
-                GameScreen.stopEnemy = true;
+            if ((tmpA.equals("sensorL") && tmpB.equals("footEnemy"))) {
+                GameScreen.enemiesToReverse.add(b.getBody());
+                b.getBody().setLinearVelocity(30, 0);
+                System.out.println("Touch L");
+            }
+            if (tmpA.equals("footEnemy") && (tmpB.equals("sensorR"))) {
+                GameScreen.enemiesToReverse.add(a.getBody());
+                a.getBody().setLinearVelocity(-30, 0);
+                System.out.println("Touch R");
+            }
+            if ((tmpA.equals("sensorR") && tmpB.equals("footEnemy"))) {
+                GameScreen.enemiesToReverse.add(b.getBody());
+                b.getBody().setLinearVelocity(-30, 0);
+                System.out.println("Touch R");
             }
         }
 
